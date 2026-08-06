@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="src/EnterpriseEmployeeManagementSystem.API/EnterpriseEmployeeManagementSystem.API.csproj" Id="999dc8d8-5928-4a6c-82a4-d8785efdb583" />
   <Project Path="src/EnterpriseEmployeeManagementSystem.Application/EnterpriseEmployeeManagementSystem.Application.csproj" Id="6f387c5f-c8bd-4ed0-8fb2-feb2e01adc1f" />
   <Project Path="src/EnterpriseEmployeeManagementSystem.Domain/EnterpriseEmployeeManagementSystem.Domain.csproj" Id="c0dae19d-8be3-4f1e-983a-1b8c2cb7d0c8" />
   <Project Path="src/EnterpriseEmployeeManagementSystem.Infrastructure/EnterpriseEmployeeManagementSystem.Infrastructure.csproj" Id="ba45508f-f9fc-4fa6-b165-cd1b4235b281" />
