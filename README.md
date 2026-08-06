@@ -4,12 +4,13 @@ An enterprise-grade Employee Management System built with ASP.NET Core 9 followi
 
 ## Tech Stack
 
-- ASP.NET Core 9
+- ASP.NET Core 10
 - Entity Framework Core
-- SQL Server
+- PostgreSQL
 - JWT Authentication
 - Clean Architecture
 - Repository Pattern
 - Docker
+- Npgsql EF Core Provider
 - Azure
 - GitHub Actions
