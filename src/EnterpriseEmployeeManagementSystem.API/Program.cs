@@ -1,6 +1,9 @@
-﻿using EnterpriseEmployeeManagementSystem.Infrastructure.DependencyInjection;
+﻿using EnterpriseEmployeeManagementSystem.Application.Common;
+using EnterpriseEmployeeManagementSystem.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
