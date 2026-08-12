@@ -39,4 +39,16 @@ public class EmployeeController : ControllerBase
 
         return Ok(employees);
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<EmployeeDto>> GetById(
+    int id,
+    CancellationToken cancellationToken)
+    {
+        var employee = await _employeeService.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        return Ok(employee);
+    }
 }

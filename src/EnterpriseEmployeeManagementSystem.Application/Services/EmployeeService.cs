@@ -83,4 +83,33 @@ public class EmployeeService : IEmployeeService
             })
             .ToList();
     }
+
+    public async Task<EmployeeDto> GetByIdAsync(
+    int id,
+    CancellationToken cancellationToken = default)
+    {
+        var employee = await _employeeRepository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (employee is null)
+        {
+            throw new NotFoundException(
+                $"Employee with ID {id} was not found.");
+        }
+
+        return new EmployeeDto
+        {
+            Id = employee.Id,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            Email = employee.Email,
+            PhoneNumber = employee.PhoneNumber,
+            DateOfBirth = employee.DateOfBirth,
+            HireDate = employee.HireDate,
+            IsActive = employee.IsActive,
+            DepartmentId = employee.DepartmentId,
+            DepartmentName = employee.Department?.Name
+        };
+    }
 }

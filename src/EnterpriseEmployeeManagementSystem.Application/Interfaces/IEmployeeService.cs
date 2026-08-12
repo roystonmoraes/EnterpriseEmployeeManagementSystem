@@ -10,4 +10,8 @@ public interface IEmployeeService
 
     Task<IReadOnlyList<EmployeeDto>> GetAllAsync(
         CancellationToken cancellationToken = default);
+
+    Task<EmployeeDto> GetByIdAsync(
+    int id,
+    CancellationToken cancellationToken = default);
 }

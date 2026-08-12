@@ -44,6 +44,27 @@ public class ExceptionHandlingMiddleware
             await context.Response.WriteAsync(
                 JsonSerializer.Serialize(response));
         }
+        catch (NotFoundException ex)
+        {
+            _logger.LogWarning(
+                ex,
+                "Requested resource was not found.");
+
+            context.Response.StatusCode =
+                (int)HttpStatusCode.NotFound;
+
+            context.Response.ContentType =
+                "application/json";
+
+            var response = new
+            {
+                status = 404,
+                message = ex.Message
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response));
+        }
         catch (Exception ex)
         {
             _logger.LogError(
