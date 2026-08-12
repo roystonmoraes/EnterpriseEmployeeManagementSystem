@@ -1,4 +1,5 @@
 ﻿using EnterpriseEmployeeManagementSystem.Application.DTOs.Employees;
+using EnterpriseEmployeeManagementSystem.Application.Exceptions;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
 using EnterpriseEmployeeManagementSystem.Domain.Entities;
 
@@ -23,8 +24,8 @@ public class EmployeeService : IEmployeeService
 
         if (emailExists)
         {
-            throw new InvalidOperationException(
-                $"An employee with email '{request.Email}' already exists.");
+            throw new ConflictException(
+    $"An employee with email '{request.Email}' already exists.");
         }
 
         var employee = new Employee
