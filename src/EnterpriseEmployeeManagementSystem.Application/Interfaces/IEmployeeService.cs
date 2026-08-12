@@ -7,4 +7,7 @@ public interface IEmployeeService
     Task<EmployeeDto> CreateAsync(
         CreateEmployeeRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<EmployeeDto>> GetAllAsync(
+        CancellationToken cancellationToken = default);
 }

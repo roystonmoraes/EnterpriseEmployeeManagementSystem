@@ -29,4 +29,14 @@ public class EmployeeController : ControllerBase
             new { id = employee.Id },
             employee);
     }
+
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<EmployeeDto>>> GetAll(
+    CancellationToken cancellationToken)
+    {
+        var employees = await _employeeService.GetAllAsync(
+            cancellationToken);
+
+        return Ok(employees);
+    }
 }

@@ -60,4 +60,27 @@ public class EmployeeService : IEmployeeService
             DepartmentId = employee.DepartmentId
         };
     }
+
+    public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync(
+    CancellationToken cancellationToken = default)
+    {
+        var employees = await _employeeRepository.GetAllAsync(
+            cancellationToken);
+
+        return employees
+            .Select(employee => new EmployeeDto
+            {
+                Id = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+                DateOfBirth = employee.DateOfBirth,
+                HireDate = employee.HireDate,
+                IsActive = employee.IsActive,
+                DepartmentId = employee.DepartmentId,
+                DepartmentName = employee.Department?.Name
+            })
+            .ToList();
+    }
 }
