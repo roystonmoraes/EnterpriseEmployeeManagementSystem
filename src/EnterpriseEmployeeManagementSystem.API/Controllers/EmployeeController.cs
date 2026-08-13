@@ -65,4 +65,16 @@ public class EmployeeController : ControllerBase
 
         return Ok(employee);
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Deactivate(
+    int id,
+    CancellationToken cancellationToken)
+    {
+        await _employeeService.DeactivateAsync(
+            id,
+            cancellationToken);
+
+        return NoContent();
+    }
 }

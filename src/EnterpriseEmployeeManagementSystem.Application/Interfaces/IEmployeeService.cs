@@ -15,5 +15,12 @@ public interface IEmployeeService
     int id,
     CancellationToken cancellationToken = default);
 
-    Task<EmployeeDto> UpdateAsync(int id, UpdateEmployeeRequest request, CancellationToken cancellationToken = default);
+    Task<EmployeeDto> UpdateAsync(
+        int id,
+        UpdateEmployeeRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task DeactivateAsync(
+    int id,
+    CancellationToken cancellationToken = default);
 }

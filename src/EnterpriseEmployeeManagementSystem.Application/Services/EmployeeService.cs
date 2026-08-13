@@ -168,4 +168,31 @@ public class EmployeeService : IEmployeeService
             DepartmentName = employee.Department?.Name
         };
     }
+
+    public async Task DeactivateAsync(
+    int id,
+    CancellationToken cancellationToken = default)
+    {
+        var employee = await _employeeRepository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (employee is null)
+        {
+            throw new NotFoundException(
+                $"Employee with ID {id} was not found.");
+        }
+
+        if (!employee.IsActive)
+        {
+            return;
+        }
+
+        employee.IsActive = false;
+
+        _employeeRepository.Update(employee);
+
+        await _employeeRepository.SaveChangesAsync(
+            cancellationToken);
+    }
 }
