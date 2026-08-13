@@ -112,4 +112,60 @@ public class EmployeeService : IEmployeeService
             DepartmentName = employee.Department?.Name
         };
     }
+
+    public async Task<EmployeeDto> UpdateAsync(
+    int id,
+    UpdateEmployeeRequest request,
+    CancellationToken cancellationToken = default)
+    {
+        var employee = await _employeeRepository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (employee is null)
+        {
+            throw new NotFoundException(
+                $"Employee with ID {id} was not found.");
+        }
+
+        var emailExists = await _employeeRepository
+            .ExistsByEmailAsync(request.Email, cancellationToken);
+
+        if (emailExists && !string.Equals(
+                employee.Email,
+                request.Email,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ConflictException(
+                $"An employee with email '{request.Email}' already exists.");
+        }
+
+        employee.FirstName = request.FirstName;
+        employee.LastName = request.LastName;
+        employee.Email = request.Email;
+        employee.PhoneNumber = request.PhoneNumber;
+        employee.DateOfBirth = request.DateOfBirth;
+        employee.HireDate = request.HireDate;
+        employee.DepartmentId = request.DepartmentId;
+        employee.IsActive = request.IsActive;
+
+        _employeeRepository.Update(employee);
+
+        await _employeeRepository.SaveChangesAsync(
+            cancellationToken);
+
+        return new EmployeeDto
+        {
+            Id = employee.Id,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            Email = employee.Email,
+            PhoneNumber = employee.PhoneNumber,
+            DateOfBirth = employee.DateOfBirth,
+            HireDate = employee.HireDate,
+            IsActive = employee.IsActive,
+            DepartmentId = employee.DepartmentId,
+            DepartmentName = employee.Department?.Name
+        };
+    }
 }

@@ -51,4 +51,18 @@ public class EmployeeController : ControllerBase
 
         return Ok(employee);
     }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<EmployeeDto>> Update(
+    int id,
+    UpdateEmployeeRequest request,
+    CancellationToken cancellationToken)
+    {
+        var employee = await _employeeService.UpdateAsync(
+            id,
+            request,
+            cancellationToken);
+
+        return Ok(employee);
+    }
 }

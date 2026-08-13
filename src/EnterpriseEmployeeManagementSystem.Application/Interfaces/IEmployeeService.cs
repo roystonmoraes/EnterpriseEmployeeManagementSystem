@@ -14,4 +14,6 @@ public interface IEmployeeService
     Task<EmployeeDto> GetByIdAsync(
     int id,
     CancellationToken cancellationToken = default);
+
+    Task<EmployeeDto> UpdateAsync(int id, UpdateEmployeeRequest request, CancellationToken cancellationToken = default);
 }
