@@ -64,4 +64,45 @@ public class EmployeeRepository : IEmployeeRepository
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<(IReadOnlyList<Employee> Items, int TotalCount)> GetPagedAsync(
+    string? search,
+    bool? activeOnly,
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default)
+{
+    var query = _context.Employees
+        .Include(e => e.Department)
+        .AsNoTracking()
+        .AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        search = search.Trim();
+
+        query = query.Where(e =>
+            e.FirstName.Contains(search) ||
+            e.LastName.Contains(search) ||
+            e.Email.Contains(search));
+    }
+
+    if (activeOnly.HasValue)
+    {
+        query = query.Where(e =>
+            e.IsActive == activeOnly.Value);
+    }
+
+    var totalCount = await query.CountAsync(
+        cancellationToken);
+
+    var items = await query
+        .OrderBy(e => e.LastName)
+        .ThenBy(e => e.FirstName)
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync(cancellationToken);
+
+    return (items, totalCount);
+}
 }

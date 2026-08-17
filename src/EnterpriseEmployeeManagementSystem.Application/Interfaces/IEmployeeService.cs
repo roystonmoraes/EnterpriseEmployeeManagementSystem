@@ -1,4 +1,5 @@
 ﻿using EnterpriseEmployeeManagementSystem.Application.DTOs.Employees;
+using EnterpriseEmployeeManagementSystem.Application.DTOs;
 
 namespace EnterpriseEmployeeManagementSystem.Application.Interfaces;
 
@@ -8,8 +9,9 @@ public interface IEmployeeService
         CreateEmployeeRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<EmployeeDto>> GetAllAsync(
-        CancellationToken cancellationToken = default);
+    Task<PagedResult<EmployeeDto>> GetAllAsync(
+    EmployeeQueryRequest request,
+    CancellationToken cancellationToken = default);
 
     Task<EmployeeDto> GetByIdAsync(
     int id,

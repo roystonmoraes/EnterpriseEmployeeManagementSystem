@@ -1,6 +1,7 @@
 ﻿using EnterpriseEmployeeManagementSystem.Application.DTOs.Employees;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using EnterpriseEmployeeManagementSystem.Application.DTOs;
 
 namespace EnterpriseEmployeeManagementSystem.API.Controllers;
 
@@ -16,47 +17,35 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<EmployeeDto>> Create(
-        CreateEmployeeRequest request,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<EmployeeDto>> Create(CreateEmployeeRequest request, CancellationToken cancellationToken)
     {
-        var employee = await _employeeService.CreateAsync(
-            request,
-            cancellationToken);
+        var employee = await _employeeService.CreateAsync(request, cancellationToken);
 
-        return CreatedAtAction(
-            nameof(Create),
-            new { id = employee.Id },
-            employee);
+        return CreatedAtAction(nameof(Create), new { id = employee.Id }, employee);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<EmployeeDto>>> GetAll(
-    CancellationToken cancellationToken)
+    public async Task<ActionResult<PagedResult<EmployeeDto>>> GetAll(
+        [FromQuery] EmployeeQueryRequest request,
+        CancellationToken cancellationToken)
     {
         var employees = await _employeeService.GetAllAsync(
+            request,
             cancellationToken);
 
         return Ok(employees);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<EmployeeDto>> GetById(
-    int id,
-    CancellationToken cancellationToken)
+    public async Task<ActionResult<EmployeeDto>> GetById(int id, CancellationToken cancellationToken)
     {
-        var employee = await _employeeService.GetByIdAsync(
-            id,
-            cancellationToken);
+        var employee = await _employeeService.GetByIdAsync(id, cancellationToken);
 
         return Ok(employee);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<EmployeeDto>> Update(
-    int id,
-    UpdateEmployeeRequest request,
-    CancellationToken cancellationToken)
+    public async Task<ActionResult<EmployeeDto>> Update(int id, UpdateEmployeeRequest request, CancellationToken cancellationToken)
     {
         var employee = await _employeeService.UpdateAsync(
             id,

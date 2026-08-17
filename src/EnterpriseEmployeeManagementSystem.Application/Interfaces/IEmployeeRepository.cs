@@ -25,4 +25,11 @@ public interface IEmployeeRepository
 
     Task SaveChangesAsync(
         CancellationToken cancellationToken = default);
+
+    Task<(IReadOnlyList<Employee> Items, int TotalCount)> GetPagedAsync(
+    string? search,
+    bool? activeOnly,
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default);
 }

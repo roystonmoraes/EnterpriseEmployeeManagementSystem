@@ -2,6 +2,7 @@
 using EnterpriseEmployeeManagementSystem.Application.Exceptions;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
 using EnterpriseEmployeeManagementSystem.Domain.Entities;
+using EnterpriseEmployeeManagementSystem.Application.DTOs;
 
 namespace EnterpriseEmployeeManagementSystem.Application.Services;
 
@@ -61,28 +62,56 @@ public class EmployeeService : IEmployeeService
         };
     }
 
-    public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync(
+    public async Task<PagedResult<EmployeeDto>> GetAllAsync(
+    EmployeeQueryRequest request,
     CancellationToken cancellationToken = default)
+{
+    if (request.PageNumber < 1)
     {
-        var employees = await _employeeRepository.GetAllAsync(
-            cancellationToken);
-
-        return employees
-            .Select(employee => new EmployeeDto
-            {
-                Id = employee.Id,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Email = employee.Email,
-                PhoneNumber = employee.PhoneNumber,
-                DateOfBirth = employee.DateOfBirth,
-                HireDate = employee.HireDate,
-                IsActive = employee.IsActive,
-                DepartmentId = employee.DepartmentId,
-                DepartmentName = employee.Department?.Name
-            })
-            .ToList();
+        request.PageNumber = 1;
     }
+
+    if (request.PageSize < 1)
+    {
+        request.PageSize = 10;
+    }
+
+    if (request.PageSize > 100)
+    {
+        request.PageSize = 100;
+    }
+
+    var result = await _employeeRepository.GetPagedAsync(
+        request.Search,
+        request.ActiveOnly,
+        request.PageNumber,
+        request.PageSize,
+        cancellationToken);
+
+    var employees = result.Items
+        .Select(employee => new EmployeeDto
+        {
+            Id = employee.Id,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            Email = employee.Email,
+            PhoneNumber = employee.PhoneNumber,
+            DateOfBirth = employee.DateOfBirth,
+            HireDate = employee.HireDate,
+            IsActive = employee.IsActive,
+            DepartmentId = employee.DepartmentId,
+            DepartmentName = employee.Department?.Name
+        })
+        .ToList();
+
+    return new PagedResult<EmployeeDto>
+    {
+        Items = employees,
+        PageNumber = request.PageNumber,
+        PageSize = request.PageSize,
+        TotalCount = result.TotalCount
+    };
+}
 
     public async Task<EmployeeDto> GetByIdAsync(
     int id,
