@@ -8,9 +8,6 @@ public interface IEmployeeRepository
         int id,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<Employee>> GetAllAsync(
-        CancellationToken cancellationToken = default);
-
     Task<bool> ExistsByEmailAsync(
         string email,
         CancellationToken cancellationToken = default);

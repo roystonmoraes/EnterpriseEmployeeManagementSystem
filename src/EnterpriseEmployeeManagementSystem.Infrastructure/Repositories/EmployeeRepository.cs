@@ -23,17 +23,6 @@ public class EmployeeRepository : IEmployeeRepository
             .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Employee>> GetAllAsync(
-        CancellationToken cancellationToken = default)
-    {
-        return await _context.Employees
-            .Include(e => e.Department)
-            .AsNoTracking()
-            .OrderBy(e => e.LastName)
-            .ThenBy(e => e.FirstName)
-            .ToListAsync(cancellationToken);
-    }
-
     public async Task<bool> ExistsByEmailAsync(
         string email,
         CancellationToken cancellationToken = default)
