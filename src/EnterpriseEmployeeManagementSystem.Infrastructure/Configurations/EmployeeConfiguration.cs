@@ -12,29 +12,21 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.FirstName)
-               .IsRequired()
-               .HasMaxLength(100);
+        builder.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
 
-        builder.Property(e => e.LastName)
-               .IsRequired()
-               .HasMaxLength(100);
+        builder.Property(e => e.LastName).IsRequired().HasMaxLength(100);
 
-        builder.Property(e => e.Email)
-               .IsRequired()
-               .HasMaxLength(150);
+        builder.Property(e => e.Email).IsRequired().HasMaxLength(150);
 
-        builder.HasIndex(e => e.Email)
-               .IsUnique();
+        builder.HasIndex(e => e.Email).IsUnique();
 
-        builder.Property(e => e.PhoneNumber)
-               .HasMaxLength(20);
+        builder.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-        builder.Property(e => e.IsActive)
-               .HasDefaultValue(true);
+        builder.Property(e => e.IsActive).HasDefaultValue(true);
 
-        builder.HasOne(e => e.Department)
-               .WithMany(d => d.Employees)
-               .HasForeignKey(e => e.DepartmentId);
+        builder
+            .HasOne(e => e.Department)
+            .WithMany(d => d.Employees)
+            .HasForeignKey(e => e.DepartmentId);
     }
 }

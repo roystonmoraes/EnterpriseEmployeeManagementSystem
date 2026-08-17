@@ -10,7 +10,5 @@ public class PagedResult<T>
 
     public int TotalCount { get; set; }
 
-    public int TotalPages =>
-        (int)Math.Ceiling(
-            TotalCount / (double)PageSize);
+    public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
 }

@@ -1,6 +1,6 @@
-﻿using EnterpriseEmployeeManagementSystem.Application.Exceptions;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
+using EnterpriseEmployeeManagementSystem.Application.Exceptions;
 
 namespace EnterpriseEmployeeManagementSystem.API.Middleware;
 
@@ -11,7 +11,8 @@ public class ExceptionHandlingMiddleware
 
     public ExceptionHandlingMiddleware(
         RequestDelegate next,
-        ILogger<ExceptionHandlingMiddleware> logger)
+        ILogger<ExceptionHandlingMiddleware> logger
+    )
     {
         _next = next;
         _logger = logger;
@@ -25,66 +26,39 @@ public class ExceptionHandlingMiddleware
         }
         catch (ConflictException ex)
         {
-            _logger.LogWarning(
-                ex,
-                "A business conflict occurred.");
+            _logger.LogWarning(ex, "A business conflict occurred.");
 
-            context.Response.StatusCode =
-                (int)HttpStatusCode.Conflict;
+            context.Response.StatusCode = (int)HttpStatusCode.Conflict;
 
-            context.Response.ContentType =
-                "application/json";
+            context.Response.ContentType = "application/json";
 
-            var response = new
-            {
-                status = 409,
-                message = ex.Message
-            };
+            var response = new { status = 409, message = ex.Message };
 
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
         catch (NotFoundException ex)
         {
-            _logger.LogWarning(
-                ex,
-                "Requested resource was not found.");
+            _logger.LogWarning(ex, "Requested resource was not found.");
 
-            context.Response.StatusCode =
-                (int)HttpStatusCode.NotFound;
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
-            context.Response.ContentType =
-                "application/json";
+            context.Response.ContentType = "application/json";
 
-            var response = new
-            {
-                status = 404,
-                message = ex.Message
-            };
+            var response = new { status = 404, message = ex.Message };
 
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
         catch (Exception ex)
         {
-            _logger.LogError(
-                ex,
-                "An unhandled exception occurred.");
+            _logger.LogError(ex, "An unhandled exception occurred.");
 
-            context.Response.StatusCode =
-                (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            context.Response.ContentType =
-                "application/json";
+            context.Response.ContentType = "application/json";
 
-            var response = new
-            {
-                status = 500,
-                message = "An unexpected error occurred."
-            };
+            var response = new { status = 500, message = "An unexpected error occurred." };
 
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
 }

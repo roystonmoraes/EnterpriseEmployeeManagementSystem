@@ -1,8 +1,8 @@
-﻿using EnterpriseEmployeeManagementSystem.Application.DTOs.Employees;
+﻿using EnterpriseEmployeeManagementSystem.Application.DTOs;
+using EnterpriseEmployeeManagementSystem.Application.DTOs.Employees;
 using EnterpriseEmployeeManagementSystem.Application.Exceptions;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
 using EnterpriseEmployeeManagementSystem.Domain.Entities;
-using EnterpriseEmployeeManagementSystem.Application.DTOs;
 
 namespace EnterpriseEmployeeManagementSystem.Application.Services;
 
@@ -17,16 +17,19 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> CreateAsync(
         CreateEmployeeRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         var emailExists = await _employeeRepository.ExistsByEmailAsync(
             request.Email,
-            cancellationToken);
+            cancellationToken
+        );
 
         if (emailExists)
         {
             throw new ConflictException(
-    $"An employee with email '{request.Email}' already exists.");
+                $"An employee with email '{request.Email}' already exists."
+            );
         }
 
         var employee = new Employee
@@ -38,15 +41,12 @@ public class EmployeeService : IEmployeeService
             DateOfBirth = request.DateOfBirth,
             HireDate = request.HireDate,
             DepartmentId = request.DepartmentId,
-            IsActive = true
+            IsActive = true,
         };
 
-        await _employeeRepository.AddAsync(
-            employee,
-            cancellationToken);
+        await _employeeRepository.AddAsync(employee, cancellationToken);
 
-        await _employeeRepository.SaveChangesAsync(
-            cancellationToken);
+        await _employeeRepository.SaveChangesAsync(cancellationToken);
 
         return new EmployeeDto
         {
@@ -58,73 +58,73 @@ public class EmployeeService : IEmployeeService
             DateOfBirth = employee.DateOfBirth,
             HireDate = employee.HireDate,
             IsActive = employee.IsActive,
-            DepartmentId = employee.DepartmentId
+            DepartmentId = employee.DepartmentId,
         };
     }
 
     public async Task<PagedResult<EmployeeDto>> GetAllAsync(
-    EmployeeQueryRequest request,
-    CancellationToken cancellationToken = default)
-{
-    if (request.PageNumber < 1)
+        EmployeeQueryRequest request,
+        CancellationToken cancellationToken = default
+    )
     {
-        request.PageNumber = 1;
-    }
-
-    if (request.PageSize < 1)
-    {
-        request.PageSize = 10;
-    }
-
-    if (request.PageSize > 100)
-    {
-        request.PageSize = 100;
-    }
-
-    var result = await _employeeRepository.GetPagedAsync(
-        request.Search,
-        request.ActiveOnly,
-        request.PageNumber,
-        request.PageSize,
-        cancellationToken);
-
-    var employees = result.Items
-        .Select(employee => new EmployeeDto
+        if (request.PageNumber < 1)
         {
-            Id = employee.Id,
-            FirstName = employee.FirstName,
-            LastName = employee.LastName,
-            Email = employee.Email,
-            PhoneNumber = employee.PhoneNumber,
-            DateOfBirth = employee.DateOfBirth,
-            HireDate = employee.HireDate,
-            IsActive = employee.IsActive,
-            DepartmentId = employee.DepartmentId,
-            DepartmentName = employee.Department?.Name
-        })
-        .ToList();
+            request.PageNumber = 1;
+        }
 
-    return new PagedResult<EmployeeDto>
-    {
-        Items = employees,
-        PageNumber = request.PageNumber,
-        PageSize = request.PageSize,
-        TotalCount = result.TotalCount
-    };
-}
+        if (request.PageSize < 1)
+        {
+            request.PageSize = 10;
+        }
+
+        if (request.PageSize > 100)
+        {
+            request.PageSize = 100;
+        }
+
+        var result = await _employeeRepository.GetPagedAsync(
+            request.Search,
+            request.ActiveOnly,
+            request.PageNumber,
+            request.PageSize,
+            cancellationToken
+        );
+
+        var employees = result
+            .Items.Select(employee => new EmployeeDto
+            {
+                Id = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+                DateOfBirth = employee.DateOfBirth,
+                HireDate = employee.HireDate,
+                IsActive = employee.IsActive,
+                DepartmentId = employee.DepartmentId,
+                DepartmentName = employee.Department?.Name,
+            })
+            .ToList();
+
+        return new PagedResult<EmployeeDto>
+        {
+            Items = employees,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            TotalCount = result.TotalCount,
+        };
+    }
 
     public async Task<EmployeeDto> GetByIdAsync(
-    int id,
-    CancellationToken cancellationToken = default)
+        int id,
+        CancellationToken cancellationToken = default
+    )
     {
-        var employee = await _employeeRepository.GetByIdAsync(
-            id,
-            cancellationToken);
+        var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
 
         if (employee is null)
         {
-            throw new NotFoundException(
-                $"Employee with ID {id} was not found.");
+            throw new NotFoundException($"Employee with ID {id} was not found.");
         }
 
         return new EmployeeDto
@@ -138,35 +138,36 @@ public class EmployeeService : IEmployeeService
             HireDate = employee.HireDate,
             IsActive = employee.IsActive,
             DepartmentId = employee.DepartmentId,
-            DepartmentName = employee.Department?.Name
+            DepartmentName = employee.Department?.Name,
         };
     }
 
     public async Task<EmployeeDto> UpdateAsync(
-    int id,
-    UpdateEmployeeRequest request,
-    CancellationToken cancellationToken = default)
+        int id,
+        UpdateEmployeeRequest request,
+        CancellationToken cancellationToken = default
+    )
     {
-        var employee = await _employeeRepository.GetByIdAsync(
-            id,
-            cancellationToken);
+        var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
 
         if (employee is null)
         {
-            throw new NotFoundException(
-                $"Employee with ID {id} was not found.");
+            throw new NotFoundException($"Employee with ID {id} was not found.");
         }
 
-        var emailExists = await _employeeRepository
-            .ExistsByEmailAsync(request.Email, cancellationToken);
+        var emailExists = await _employeeRepository.ExistsByEmailAsync(
+            request.Email,
+            cancellationToken
+        );
 
-        if (emailExists && !string.Equals(
-                employee.Email,
-                request.Email,
-                StringComparison.OrdinalIgnoreCase))
+        if (
+            emailExists
+            && !string.Equals(employee.Email, request.Email, StringComparison.OrdinalIgnoreCase)
+        )
         {
             throw new ConflictException(
-                $"An employee with email '{request.Email}' already exists.");
+                $"An employee with email '{request.Email}' already exists."
+            );
         }
 
         employee.FirstName = request.FirstName;
@@ -180,8 +181,7 @@ public class EmployeeService : IEmployeeService
 
         _employeeRepository.Update(employee);
 
-        await _employeeRepository.SaveChangesAsync(
-            cancellationToken);
+        await _employeeRepository.SaveChangesAsync(cancellationToken);
 
         return new EmployeeDto
         {
@@ -194,22 +194,17 @@ public class EmployeeService : IEmployeeService
             HireDate = employee.HireDate,
             IsActive = employee.IsActive,
             DepartmentId = employee.DepartmentId,
-            DepartmentName = employee.Department?.Name
+            DepartmentName = employee.Department?.Name,
         };
     }
 
-    public async Task DeactivateAsync(
-    int id,
-    CancellationToken cancellationToken = default)
+    public async Task DeactivateAsync(int id, CancellationToken cancellationToken = default)
     {
-        var employee = await _employeeRepository.GetByIdAsync(
-            id,
-            cancellationToken);
+        var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
 
         if (employee is null)
         {
-            throw new NotFoundException(
-                $"Employee with ID {id} was not found.");
+            throw new NotFoundException($"Employee with ID {id} was not found.");
         }
 
         if (!employee.IsActive)
@@ -221,7 +216,6 @@ public class EmployeeService : IEmployeeService
 
         _employeeRepository.Update(employee);
 
-        await _employeeRepository.SaveChangesAsync(
-            cancellationToken);
+        await _employeeRepository.SaveChangesAsync(cancellationToken);
     }
 }
