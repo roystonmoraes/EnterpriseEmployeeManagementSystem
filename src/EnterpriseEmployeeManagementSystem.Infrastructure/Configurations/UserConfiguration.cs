@@ -19,5 +19,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.IsActive).IsRequired();
         builder.Property(u => u.CreatedAt).IsRequired();
         builder.Property(u => u.LastLoginAt).IsRequired(false);
+        builder.Property(u => u.RefreshToken).HasMaxLength(500).IsRequired(false);
+        builder.Property(u => u.RefreshTokenExpiresAt).IsRequired(false);
+        builder.HasIndex(u => u.RefreshToken).IsUnique();
     }
 }
