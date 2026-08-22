@@ -1,6 +1,7 @@
 ﻿using EnterpriseEmployeeManagementSystem.Application.Interfaces;
 using EnterpriseEmployeeManagementSystem.Infrastructure.Persistence;
 using EnterpriseEmployeeManagementSystem.Infrastructure.Repositories;
+using EnterpriseEmployeeManagementSystem.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ public static class DependencyInjection
 
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         return services;
     }
