@@ -1,5 +1,6 @@
 ﻿using EnterpriseEmployeeManagementSystem.Application.Configuration;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
+using EnterpriseEmployeeManagementSystem.Application.Services;
 using EnterpriseEmployeeManagementSystem.Infrastructure.Persistence;
 using EnterpriseEmployeeManagementSystem.Infrastructure.Repositories;
 using EnterpriseEmployeeManagementSystem.Infrastructure.Security;
@@ -25,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
