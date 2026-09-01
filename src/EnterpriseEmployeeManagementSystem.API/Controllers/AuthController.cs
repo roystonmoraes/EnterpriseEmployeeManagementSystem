@@ -24,4 +24,15 @@ public class AuthController : ControllerBase
         var response = await _authService.LoginAsync(request, cancellationToken);
         return Ok(response);
     }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<LoginResponse>> RefreshToken(
+        RefreshTokenRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _authService.RefreshTokenAsync(request, cancellationToken);
+
+        return Ok(response);
+    }
 }

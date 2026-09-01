@@ -67,6 +67,43 @@ public class AuthService : IAuthService
         CancellationToken cancellationToken = default
     )
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetByRefreshTokenAsync(
+            request.RefreshToken,
+            cancellationToken
+        );
+
+        if (user is null)
+        {
+            throw new UnauthorizedException("Invalid refresh token.");
+        }
+
+        if (!user.IsActive)
+        {
+            throw new UnauthorizedException("User account is inactive");
+        }
+
+        if (user.RefreshTokenExpiresAt is null || user.RefreshTokenExpiresAt <= DateTime.UtcNow)
+        {
+            throw new UnauthorizedException("Refresh token has expired");
+        }
+
+        var accessToken = _jwtTokenService.GenerateAccessToken(user);
+        var refreshToken = _jwtTokenService.GenerateRefreshToken();
+        var accessTokenExpiresAt = _jwtTokenService.GetAccessTokenExpiration();
+        var refreshTokenExpiresAt = _jwtTokenService.GetRefreshTokenExpiration();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiresAt = refreshTokenExpiresAt;
+
+        await _userRepository.SaveChangesAsync(cancellationToken);
+
+        return new LoginResponse
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            AccessTokenExpiresAt = accessTokenExpiresAt,
+            Username = user.Username,
+            Role = user.Role,
+        };
     }
 }
