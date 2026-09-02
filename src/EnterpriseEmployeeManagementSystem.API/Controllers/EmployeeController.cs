@@ -1,12 +1,14 @@
 ﻿using EnterpriseEmployeeManagementSystem.Application.DTOs;
 using EnterpriseEmployeeManagementSystem.Application.DTOs.Employees;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EnterpriseEmployeeManagementSystem.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;
