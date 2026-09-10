@@ -18,17 +18,6 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [HttpPost]
-    public async Task<ActionResult<EmployeeDto>> Create(
-        CreateEmployeeRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var employee = await _employeeService.CreateAsync(request, cancellationToken);
-
-        return CreatedAtAction(nameof(Create), new { id = employee.Id }, employee);
-    }
-
     [HttpGet]
     public async Task<ActionResult<PagedResult<EmployeeDto>>> GetAll(
         [FromQuery] EmployeeQueryRequest request,
@@ -51,7 +40,20 @@ public class EmployeeController : ControllerBase
         return Ok(employee);
     }
 
+    [HttpPost]
+    [Authorize(Roles = "Admin,HRManager")]
+    public async Task<ActionResult<EmployeeDto>> Create(
+        CreateEmployeeRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var employee = await _employeeService.CreateAsync(request, cancellationToken);
+
+        return CreatedAtAction(nameof(Create), new { id = employee.Id }, employee);
+    }
+
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin,HRManager")]
     public async Task<ActionResult<EmployeeDto>> Update(
         int id,
         UpdateEmployeeRequest request,
@@ -64,6 +66,7 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin,HRManager")]
     public async Task<IActionResult> Deactivate(int id, CancellationToken cancellationToken)
     {
         await _employeeService.DeactivateAsync(id, cancellationToken);
