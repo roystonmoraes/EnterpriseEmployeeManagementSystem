@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using EnterpriseEmployeeManagementSystem.API.Middleware;
+using EnterpriseEmployeeManagementSystem.API.OpenApi;
 using EnterpriseEmployeeManagementSystem.Application.Common;
 using EnterpriseEmployeeManagementSystem.Application.Configuration;
 using EnterpriseEmployeeManagementSystem.Infrastructure.DependencyInjection;
@@ -14,7 +15,10 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<JwtBearerSecuritySchemeTransformer>();
+});
 
 var jwtSettings =
     builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
