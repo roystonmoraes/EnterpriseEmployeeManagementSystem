@@ -3,16 +3,19 @@ using EnterpriseEmployeeManagementSystem.Application.DTOs.Employees;
 using EnterpriseEmployeeManagementSystem.Application.Exceptions;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
 using EnterpriseEmployeeManagementSystem.Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace EnterpriseEmployeeManagementSystem.Application.Services;
 
 public class EmployeeService : IEmployeeService
 {
     private readonly IEmployeeRepository _employeeRepository;
+    private readonly ILogger<EmployeeService> _logger;
 
-    public EmployeeService(IEmployeeRepository employeeRepository)
+    public EmployeeService(IEmployeeRepository employeeRepository, ILogger<EmployeeService> logger)
     {
         _employeeRepository = employeeRepository;
+        _logger = logger;
     }
 
     public async Task<EmployeeDto> CreateAsync(
@@ -47,6 +50,12 @@ public class EmployeeService : IEmployeeService
         await _employeeRepository.AddAsync(employee, cancellationToken);
 
         await _employeeRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Employee {EmployeeId} created with email {Email}.",
+            employee.Id,
+            employee.Email
+        );
 
         return new EmployeeDto
         {
@@ -183,6 +192,8 @@ public class EmployeeService : IEmployeeService
 
         await _employeeRepository.SaveChangesAsync(cancellationToken);
 
+        _logger.LogInformation("Employee {EmployeeId} updated.", employee.Id);
+
         return new EmployeeDto
         {
             Id = employee.Id,
@@ -217,5 +228,7 @@ public class EmployeeService : IEmployeeService
         _employeeRepository.Update(employee);
 
         await _employeeRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Employee {EmployeeId} deactivated.", employee.Id);
     }
 }

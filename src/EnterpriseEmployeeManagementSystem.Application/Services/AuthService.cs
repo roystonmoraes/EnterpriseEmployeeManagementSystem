@@ -1,6 +1,7 @@
 using EnterpriseEmployeeManagementSystem.Application.DTOs.Auth;
 using EnterpriseEmployeeManagementSystem.Application.Exceptions;
 using EnterpriseEmployeeManagementSystem.Application.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace EnterpriseEmployeeManagementSystem.Application.Services;
 
@@ -9,16 +10,19 @@ public class AuthService : IAuthService
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly ILogger<AuthService> _logger;
 
     public AuthService(
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
-        IJwtTokenService jwtTokenService
+        IJwtTokenService jwtTokenService,
+        ILogger<AuthService> logger
     )
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _jwtTokenService = jwtTokenService;
+        _logger = logger;
     }
 
     public async Task<LoginResponse> LoginAsync(
@@ -30,11 +34,15 @@ public class AuthService : IAuthService
 
         if (user is null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {
+            _logger.LogWarning("Failed login attempt for username {Username}.", request.Username);
+
             throw new UnauthorizedException("Invalid username or password.");
         }
 
         if (!user.IsActive)
         {
+            _logger.LogWarning("Login attempt for inactive user {Username}.", user.Username);
+
             throw new UnauthorizedException("User account is inactive.");
         }
 

@@ -43,12 +43,16 @@ public sealed class JwtBearerSecuritySchemeTransformer : IOpenApiDocumentTransfo
                 BearerFormat = "JWT",
             };
 
-            foreach (
-                var operation in document.Paths.Values.SelectMany(path => path.Operations.Values)
-            )
+            foreach (var path in document.Paths.Values)
             {
-                operation.Security ??= [];
-                operation.Security.Add(requirements);
+                if (path.Operations is null)
+                    continue;
+
+                foreach (var operation in path.Operations.Values)
+                {
+                    operation.Security ??= [];
+                    operation.Security.Add(requirements);
+                }
             }
         }
     }
