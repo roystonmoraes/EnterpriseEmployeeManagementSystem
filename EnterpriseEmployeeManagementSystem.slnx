@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/tests/">
+    <Project Path="tests/EnterpriseEmployeeManagementSystem.API.Tests/EnterpriseEmployeeManagementSystem.API.Tests.csproj" />
     <Project Path="tests/EnterpriseEmployeeManagementSystem.Application.Tests/EnterpriseEmployeeManagementSystem.Application.Tests.csproj" />
   </Folder>
   <Project Path="src/EnterpriseEmployeeManagementSystem.API/EnterpriseEmployeeManagementSystem.API.csproj" Id="999dc8d8-5928-4a6c-82a4-d8785efdb583" />
