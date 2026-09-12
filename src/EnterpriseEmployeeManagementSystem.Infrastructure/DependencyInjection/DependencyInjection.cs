@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
