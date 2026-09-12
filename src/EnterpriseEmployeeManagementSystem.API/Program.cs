@@ -64,6 +64,7 @@ using (var scope = app.Services.CreateScope())
     await UserSeeder.SeedAsync(dbContext);
 }
 
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
