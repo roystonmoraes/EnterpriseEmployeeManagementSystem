@@ -111,6 +111,15 @@ public class DepartmentService : IDepartmentService
         if (department is null)
             throw new NotFoundException($"Department with ID {id} was not found.");
 
+        var hasEmployees = await _departmentRepository.HasEmployeesAsync(id, cancellationToken);
+
+        if (hasEmployees)
+        {
+            throw new ConflictException(
+                "Cannot delete a department that has employees assigned to it."
+            );
+        }
+
         _departmentRepository.Remove(department);
 
         await _departmentRepository.SaveChangesAsync(cancellationToken);
