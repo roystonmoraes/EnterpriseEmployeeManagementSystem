@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\EnterpriseEmployeeManagementSystem.API\EnterpriseEmployeeManagementSystem.API.csproj" />
+    <ProjectReference Include="..\..\src\EnterpriseEmployeeManagementSystem.Infrastructure\EnterpriseEmployeeManagementSystem.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
